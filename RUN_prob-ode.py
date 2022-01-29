@@ -2,8 +2,8 @@
         solve and visualize differential equations, utilizing probabilistic models."""
 #-----------------------------------------------------------------------------------------------------------------------------------
 __author__ = "Christian Simonis"
-__copyright__ = "Copyright 2021"
-__version__ = "1.0"
+__copyright__ = "Copyright 2022"
+__version__ = "1.1"
 __maintainer__ = "Christian Simonis"
 __email__ = "christian.Simonis.1989@gmail.com"
 __status__ = "work in progress"
@@ -32,7 +32,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns  
 import scipy        
 import lmfit                        
-import random                                                      # https://docs.python.org/3/library/random.html                                            # https://docs.python.org/3/library/datetime.html
+import random                                                      # https://docs.python.org/3/library/random.html                                            
+import json                                                        # https://docs.python.org/3/library/json.html
+
 #-----------------------------------------------------------------------------------------------------------------------------------
 # '''
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -213,4 +215,14 @@ plt.ylabel('Predators', fontsize=16)
 plt.title('Trajectory diagram w/ {} drawn samples from probabilistic model'.format(nr_samples))
 plt.show()
 
-    
+
+
+#JSON export
+save_output = np.zeros((len(t),3))
+save_output[:,0] = t        # Time 
+save_output[:,1:] = data    # Lotka Volterra simulations
+
+#savind file
+json_str = json.dumps(save_output.tolist())
+with open('data.json', 'w') as outfile:
+    outfile.write(json_str)
