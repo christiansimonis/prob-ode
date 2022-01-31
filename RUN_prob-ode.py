@@ -143,29 +143,29 @@ Lotka_Volterra.evaluate_prob_mdl(t,y_res_ode,ODE_y, observation_y, sigma_eval)
 
 
 
-#Optimization input
+# Optimization input
 observation_index_points = t.reshape(-1,1) 
 index_points = t.reshape(-1,1)
 
 
-#Call function for X optimization
+# Call function for X optimization
 print("--------------Optimization for Prey class X--------------")
 obs_X = -x_res_ode
 observation_noise_variance_X = np.std(obs_X)
 GP_opt_X, x_opt_mean, x_opt_up, x_opt_low = Lotka_Volterra.optimize_mdl_prm(index_points,observation_index_points, obs_X, observation_noise_variance_X, sigma_eval)
 
 
-#probabilistic correction for X 
+# probabilistic correction for X 
 x_opt = x_opt_mean + ODE_x
 x_opt_up = x_opt_up + ODE_x
 x_opt_low = x_opt_low + ODE_x
 
 
-#Visualization    
+# Visualization    
 Lotka_Volterra.visualize_results(t, x_opt, ODE_x, observation_x)
 
 
-#Call function for Y optimization
+# Call function for Y optimization
 print("-----------Optimization for Predator class Y-------------")
 obs_Y = -y_res_ode
 observation_noise_variance_Y = np.std(obs_Y)
@@ -173,12 +173,12 @@ GP_opt_Y, y_opt_mean, y_opt_up, y_opt_low = Lotka_Volterra.optimize_mdl_prm(inde
 
 
 
-#probabilistic correction for Y
+# probabilistic correction for Y
 y_opt = y_opt_mean + ODE_y
 y_opt_up = y_opt_up + ODE_y
 y_opt_low = y_opt_low + ODE_y
 
-#Visualization
+# Visualization
 Lotka_Volterra.visualize_results(t, y_opt, ODE_y, observation_y)
 print("-----------------Optimization finished-------------------")
 
@@ -186,7 +186,7 @@ print("-----------------Optimization finished-------------------")
 
 
 
-#Time series plot
+# Time series plot
 plt.plot(t, data, 'o',label='Noisy observations',alpha = 0.2)
 plt.plot(t, x_opt, c='r', alpha=1, linewidth=3, label = 'Model for X (Prey class)')
 plt.fill_between(t, x_opt_up, x_opt_low, color='r', alpha=.1)
@@ -200,12 +200,12 @@ plt.title('Optimized probabilistic model, combined with ODE model')
 plt.show()
 
 
-#Sampling from probabilistic model
+# Sampling from probabilistic model
 samples_X = GP_opt_X.sample(nr_samples).numpy()
 samples_Y = GP_opt_Y.sample(nr_samples).numpy()
 
 
-#Diagram with trajectories    
+# Diagram with trajectories    
 plt.plot(x_opt, y_opt, c='b', alpha=.5, linewidth=7, label = 'Model Mean') 
 plt.plot(samples_X[0,:]  + ODE_x, samples_Y[0,:]  + ODE_y, c='b', alpha=.1, label = 'Model samples') #for creating one legend entry
 plt.plot(samples_X.T + ODE_x.reshape(-1,1), samples_Y.T + ODE_y.reshape(-1,1), c='b', alpha=.1, label = '_nolegend_') # no legend entrys hier
@@ -217,12 +217,12 @@ plt.show()
 
 
 
-#JSON export
+# JSON export
 save_output = np.zeros((len(t),3))
 save_output[:,0] = t        # Time 
 save_output[:,1:] = data    # Lotka Volterra simulations
 
-#savind file
+# saving file, which can be processed further on with Julia: https://github.com/christiansimonis/prob-ode/blob/master/neural_tuning.ipynb
 json_str = json.dumps(save_output.tolist())
 with open('data.json', 'w') as outfile:
     outfile.write(json_str)
